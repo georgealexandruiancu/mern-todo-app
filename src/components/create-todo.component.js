@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import dbPath from '../conn/mongo';
 
 export default class CreateTodos extends Component {
 
@@ -44,6 +45,21 @@ export default class CreateTodos extends Component {
         console.log(`Todo description: ${this.state.todo_description}`);
         console.log(`Todo responsible: ${this.state.todo_responsible}`);
         console.log(`Todo priority: ${this.state.todo_priority}`);
+        console.log(`Todo date: ${this.state.todo_date}`);
+        console.log(`Todo hour: ${this.state.todo_hour}`);
+
+        fetch(dbPath+"/add", {
+            method: 'POST', // or 'PUT'
+            body: JSON.stringify(this.state), // data can be `string` or {object}!
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(res => res.json())
+            .then(response => {
+                alert("Todo added successful");
+                console.log('Success:', JSON.stringify(response))
+            })
+            .catch(error => console.error('Error:', error));
 
         this.setState({
             todo_description: '',
