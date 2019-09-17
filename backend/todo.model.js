@@ -19,6 +19,12 @@ let Todo = new Schema({
     },
     todo_hour:{
         type: String
+    },
+    todo_image_name:{
+        type: String
+    },
+    todo_image_path:{
+        type: String
     }
 });
 

@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const PORT = 4000;
+const fileUpload = require("express-fileupload");
 
 /**
  * ? access for express router
@@ -16,6 +17,7 @@ const todoRoutes = express.Router();
 let Todo = require("./todo.model");
 
 app.use(cors());
+app.use(fileUpload());
 
 /**
  *  ? Node.js body parsing middleware.
@@ -63,10 +65,31 @@ todoRoutes.route("/:id").get((req, res) => {
 })
 /**
  * ? ---------------------------
+ * ? - Upload sys for files
+ * ? ---------------------------
+ */
+todoRoutes.route("/upload").post((req, res) => {
+    if(req.files === null){
+        return res.status(400).json({msg: 'No file uploaded'});
+    }
+
+    const file = req.files.file;
+    file.mv(`../public/uploads/${file.name}`, err => {
+        if(err){
+            console.error(err);
+            return res.status(500).send(err);
+        }
+        res.json({fileName: file.name, filePath: `/uploads/${file.name}`});
+    })
+})
+/**
+ * ? ---------------------------
  * ? - Add a new todo
  * ? ---------------------------
  */
 todoRoutes.route("/add").post((req, res) => {
+
+    console.log(res.file);
     let todo = new Todo(req.body);
 
     todo.save().then(() => {

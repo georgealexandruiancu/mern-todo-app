@@ -12,8 +12,7 @@ export default class TodosList extends Component{
     async getData(){
         let res = await fetch(dbPath)
         let responseJSON = await res.json();
-        this.setState({ todos: responseJSON });
-        
+        this.setState({ todos: responseJSON }); 
     }
     componentDidMount(){
         this.getData();
@@ -28,28 +27,36 @@ export default class TodosList extends Component{
         // console.log(res.status);
     }
     setStyles(item){
-        if(item === "High"){
-            return { background: '#ff8587' }
-        }else if(item === "Low"){
-            return { background: '#ace08d'}
-        }else if(item === "Medium"){
-            return { background: '#e3c18f'}
-        }
+        // if(item === "High"){
+        //     return { color: 'red' }
+        // }else if(item === "Low"){
+        //     return { color: 'green'}
+        // }else if(item === "Medium"){
+        //     return { color: 'yellow'}
+        // }
+    }
+    EditTodo = (id) =>{
+        window.location = "/edit/"+id;
     }
     renderList(){
         if(this.state.todos !== ""){
             let table = []
             this.state.todos.map((item, index) => {
                 table.push(
-                    <li key={index} className="list-group-item mt-20" style={this.setStyles(item.todo_priority)}>
-                        {item.todo_description} <hr/>
-                        <div style={{float: 'left'}}>
+                    <li key={index} className="list-group-item mt-20 todo_holder" style={this.setStyles(item.todo_priority)}>
+                        <div className="todo_item">{item.todo_description}</div>
+                        <div className="todo_item">
                             Priority: {item.todo_priority} <br/>
                             Responsible: {item.todo_responsible} <br />
                             Date: {item.todo_date} <br />
                             Hour: {item.todo_hour} <br />
                         </div>
-                        <button className="btn btn-danger" onClick={() => this.DeleteItem(item._id)} style={{float: 'right'}}>Delete</button>
+                        <img className="todo_item" src={item.todo_image_path} alt=""/>
+                        <div className="todo_item">
+                            <button className="btn btn-danger todo_button" onClick={() => this.DeleteItem(item._id)} >Delete</button>
+                            <button className="btn btn-warning todo_button" onClick={() => this.EditTodo(item._id)} >Edit</button>
+                        </div>
+                      
                     </li>
                 )
                 return 0;
@@ -60,11 +67,13 @@ export default class TodosList extends Component{
     render(){
         return(
             <div className="container" style={{marginTop: 20}}>
-                <div className="card" style={{width: 100+"%"}}>
-                    <ul className="list-group list-group-flush">
-                        {this.renderList()}
-                    </ul>
-                </div>
+                {this.state.todos.length !== 0 ? 
+                    <div className="card" style={{width: 100+"%"}}>
+                        <ul className="list-group list-group-flush">
+                            {this.renderList()} 
+                        </ul>
+                    </div>
+                : <></>}
             </div>
         )
     }
